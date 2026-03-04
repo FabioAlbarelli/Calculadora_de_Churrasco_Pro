@@ -77,7 +77,6 @@
             text-align: center;
             margin-bottom: 2.5rem;
             animation: fadeInDown 0.8s ease-out;
-            position: relative;
         }
 
         .header h1 {
@@ -99,22 +98,30 @@
             font-size: 1.1rem;
         }
 
+        .top-bar {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 0.5rem;
+        }
+
         .settings-btn {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(30, 30, 30, 0.85);
+            backdrop-filter: blur(10px);
             border: 1px solid var(--border-subtle);
             color: var(--text-muted);
-            padding: 8px 16px;
-            border-radius: var(--radius-md);
+            padding: 9px 18px;
+            border-radius: 30px;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 8px;
             font-family: inherit;
+            font-size: 0.9rem;
             font-weight: 600;
             transition: var(--transition);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
         }
 
         .settings-btn:hover {
@@ -588,10 +595,14 @@
 
 <body>
 
+    <div class="top-bar">
+        <!-- Settings Button -->
+        <button class="settings-btn" onclick="openSettings()"><i class="ph ph-gear"></i> Preços</button>
+    </div>
+
     <div class="header">
         <h1><i class="ph-fill ph-fire"></i> Churrasco Pro</h1>
         <p>O cálculo perfeito. Sem sobras, sem faltas, com estilo.</p>
-        <button class="settings-btn" onclick="openSettings()"><i class="ph ph-gear"></i> Preços</button>
     </div>
 
     <!-- SETTINGS MODAL -->

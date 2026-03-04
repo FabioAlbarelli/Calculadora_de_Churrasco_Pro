@@ -77,6 +77,7 @@
             text-align: center;
             margin-bottom: 2.5rem;
             animation: fadeInDown 0.8s ease-out;
+            position: relative;
         }
 
         .header h1 {
@@ -96,6 +97,167 @@
         .header p {
             color: var(--text-muted);
             font-size: 1.1rem;
+        }
+
+        .settings-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: inherit;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .settings-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Modal Settings */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            transform: translateY(30px) scale(0.95);
+            transition: var(--transition);
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        .price-group {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 0.8rem 1rem;
+            border-radius: var(--radius-md);
+            border: 1px solid transparent;
+        }
+
+        .price-group:focus-within {
+            border-color: var(--border-active);
+        }
+
+        .price-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+
+        .price-label i {
+            color: var(--text-muted);
+        }
+
+        .price-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-muted);
+        }
+
+        .price-input {
+            width: 80px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-subtle);
+            color: white;
+            padding: 5px 10px;
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            text-align: right;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .price-input:focus {
+            border-color: var(--brand-primary);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            background: var(--brand-gradient);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px var(--brand-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 69, 0, 0.5);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
         }
 
         /* Layout Container */
@@ -429,6 +591,67 @@
     <div class="header">
         <h1><i class="ph-fill ph-fire"></i> Churrasco Pro</h1>
         <p>O cálculo perfeito. Sem sobras, sem faltas, com estilo.</p>
+        <button class="settings-btn" onclick="openSettings()"><i class="ph ph-gear"></i> Preços</button>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div class="modal-overlay" id="settingsModal" onclick="if(event.target===this) closeSettings()">
+        <div class="modal">
+            <div class="modal-header">
+                <h2><i class="ph ph-sliders"></i> Ajustar Preços Base</h2>
+                <button class="modal-close" onclick="closeSettings()"><i class="ph ph-x"></i></button>
+            </div>
+
+            <h3 class="result-category">Carnes (por KG)</h3>
+            <div class="price-group">
+                <div class="price-label"><i class="ph ph-cow"></i> Bovina</div>
+                <div class="price-input-wrapper">R$ <input type="number" step="0.5" id="pBovina" class="price-input">
+                </div>
+            </div>
+            <div class="price-group">
+                <div class="price-label"><i class="ph ph-sausage"></i> Linguiça</div>
+                <div class="price-input-wrapper">R$ <input type="number" step="0.5" id="pLinguica" class="price-input">
+                </div>
+            </div>
+            <div class="price-group">
+                <div class="price-label"><i class="ph ph-bird"></i> Frango</div>
+                <div class="price-input-wrapper">R$ <input type="number" step="0.5" id="pFrango" class="price-input">
+                </div>
+            </div>
+            <div class="price-group">
+                <div class="price-label"><i class="ph ph-pig"></i> Suína</div>
+                <div class="price-input-wrapper">R$ <input type="number" step="0.5" id="pSuina" class="price-input">
+                </div>
+            </div>
+
+            <h3 class="result-category" style="margin-top:1.5rem">Bebidas & Extras</h3>
+            <div class="price-group">
+                <div class="price-label"><i class="ph ph-beer-bottle"></i> Cerveja (Lata)</div>
+                <div class="price-input-wrapper">R$ <input type="number" step="0.1" id="pCerveja" class="price-input">
+                </div>
+            </div>
+            <div class="price-group">
+                <div class="price-label"><i class="ph ph-pint-glass"></i> Refri (2L)</div>
+                <div class="price-input-wrapper">R$ <input type="number" step="0.5" id="pRefri" class="price-input">
+                </div>
+            </div>
+            <div class="price-group">
+                <div class="price-label"><i class="ph ph-drop"></i> Água (1.5L)</div>
+                <div class="price-input-wrapper">R$ <input type="number" step="0.5" id="pAgua" class="price-input">
+                </div>
+            </div>
+            <div class="price-group">
+                <div class="price-label"><i class="ph ph-fire"></i> Carvão (3kg)</div>
+                <div class="price-input-wrapper">R$ <input type="number" step="0.5" id="pCarvao" class="price-input">
+                </div>
+            </div>
+            <div class="price-group">
+                <div class="price-label"><i class="ph ph-baguette"></i> Pão de Alho (Unid.)</div>
+                <div class="price-input-wrapper">R$ <input type="number" step="0.1" id="pPao" class="price-input"></div>
+            </div>
+
+            <button class="btn-primary" onclick="saveSettings()">Salvar Preços</button>
+        </div>
     </div>
 
     <div class="container">
@@ -614,16 +837,64 @@
 
         const ML_AGUA_P = 200;
 
-        // Estimated average prices (in Reais R$)
-        const P_BOVINA = 45;   // R$/kg
-        const P_LINGUICA = 22; // R$/kg
-        const P_FRANGO = 18;   // R$/kg
-        const P_SUINA = 24;    // R$/kg
-        const P_CERVEJA = 4;   // R$/lata
-        const P_REFRI = 8;     // R$/pet 2L
-        const P_AGUA = 4;      // R$/garrafa 1.5L
-        const P_CARVAO = 15;   // R$/pacote 3kg
-        const P_PAO_ALHO = 2;  // R$/unidade
+        const DefaultPrices = {
+            BOVINA: 45,
+            LINGUICA: 22,
+            FRANGO: 18,
+            SUINA: 24,
+            CERVEJA: 4,
+            REFRI: 8,
+            AGUA: 4,
+            CARVAO: 15,
+            PAO_ALHO: 2
+        };
+
+        let Prices = { ...DefaultPrices };
+
+        // Load prices from LocalStorage if available
+        function loadPrices() {
+            const saved = localStorage.getItem('churrasco_prices');
+            if (saved) {
+                try {
+                    Prices = { ...DefaultPrices, ...JSON.parse(saved) };
+                } catch (e) { console.error('Erro ao ler preços salvos', e); }
+            }
+        }
+
+        // Settings Modal logic
+        function openSettings() {
+            document.getElementById('pBovina').value = Prices.BOVINA;
+            document.getElementById('pLinguica').value = Prices.LINGUICA;
+            document.getElementById('pFrango').value = Prices.FRANGO;
+            document.getElementById('pSuina').value = Prices.SUINA;
+            document.getElementById('pCerveja').value = Prices.CERVEJA;
+            document.getElementById('pRefri').value = Prices.REFRI;
+            document.getElementById('pAgua').value = Prices.AGUA;
+            document.getElementById('pCarvao').value = Prices.CARVAO;
+            document.getElementById('pPao').value = Prices.PAO_ALHO;
+
+            document.getElementById('settingsModal').classList.add('active');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('active');
+        }
+
+        function saveSettings() {
+            Prices.BOVINA = parseFloat(document.getElementById('pBovina').value) || DefaultPrices.BOVINA;
+            Prices.LINGUICA = parseFloat(document.getElementById('pLinguica').value) || DefaultPrices.LINGUICA;
+            Prices.FRANGO = parseFloat(document.getElementById('pFrango').value) || DefaultPrices.FRANGO;
+            Prices.SUINA = parseFloat(document.getElementById('pSuina').value) || DefaultPrices.SUINA;
+            Prices.CERVEJA = parseFloat(document.getElementById('pCerveja').value) || DefaultPrices.CERVEJA;
+            Prices.REFRI = parseFloat(document.getElementById('pRefri').value) || DefaultPrices.REFRI;
+            Prices.AGUA = parseFloat(document.getElementById('pAgua').value) || DefaultPrices.AGUA;
+            Prices.CARVAO = parseFloat(document.getElementById('pCarvao').value) || DefaultPrices.CARVAO;
+            Prices.PAO_ALHO = parseFloat(document.getElementById('pPao').value) || DefaultPrices.PAO_ALHO;
+
+            localStorage.setItem('churrasco_prices', JSON.stringify(Prices));
+            closeSettings();
+            calcular(); // recalculate with new prices
+        }
 
         function updateCount(id, delta) {
             const el = document.getElementById(id);
@@ -740,17 +1011,17 @@
 
             // Financial Calculations
             let custo = 0;
-            custo += vBov * P_BOVINA;
-            custo += vLing * P_LINGUICA;
-            custo += vFra * P_FRANGO;
-            custo += vSui * P_SUINA;
+            custo += vBov * Prices.BOVINA;
+            custo += vLing * Prices.LINGUICA;
+            custo += vFra * Prices.FRANGO;
+            custo += vSui * Prices.SUINA;
 
-            custo += latasCerv * P_CERVEJA;
-            custo += petsRefri * P_REFRI;
-            custo += gfAgua * P_AGUA;
+            custo += latasCerv * Prices.CERVEJA;
+            custo += petsRefri * Prices.REFRI;
+            custo += gfAgua * Prices.AGUA;
 
-            custo += numPao * P_PAO_ALHO;
-            custo += sC * P_CARVAO;
+            custo += numPao * Prices.PAO_ALHO;
+            custo += sC * Prices.CARVAO;
 
             document.getElementById('valTotal').innerText = formatCurrency(custo);
 
@@ -762,6 +1033,7 @@
         }
 
         // Initial setup
+        loadPrices();
         calcular();
     </script>
 </body>
